@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:tetris/model.dart';
 
 class Piece {
@@ -8,6 +10,10 @@ class Piece {
   // a peça é uma lista de inteiros que representa sua posição
   List<int> position = [];
 
+  Color get color {
+    return tetrominoColors[type] ?? const Color(0xFFFFFFFF);
+  }
+
   void initializePiece() {
     switch (type) {
       case Tetromino.L:
@@ -16,6 +22,54 @@ class Piece {
           -16,
           -6,
           -5
+        ];
+        break;
+      case Tetromino.J:
+        position = [
+          -25,
+          -15,
+          -5,
+          -6
+        ];
+        break;
+      case Tetromino.I:
+        position = [
+          -4,
+          -5,
+          -6,
+          -7
+        ];
+        break;
+      case Tetromino.O:
+        position = [
+          -15,
+          -16,
+          -5,
+          -6
+        ];
+        break;
+      case Tetromino.S:
+        position = [
+          -15,
+          -14,
+          -6,
+          -5
+        ];
+        break;
+      case Tetromino.Z:
+        position = [
+          -17,
+          -16,
+          -6,
+          -5
+        ];
+        break;
+      case Tetromino.T:
+        position = [
+          -26,
+          -16,
+          -6,
+          -15
         ];
         break;
       default:
