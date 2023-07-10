@@ -25,12 +25,9 @@ class TetrisPiece {
 
       int bitValue = (value >> index) & 1;
       if (bitValue == 1) {
-        print(row);
         position.add((row) * 10 + (col));
       }
     }
-    // print('${positionX}${positionY}');
-    // print(position);
   }
 
   void movePiece(Direction direction) {
@@ -57,8 +54,6 @@ class TetrisPiece {
     checkBounds();
   }
 
-  // TODO* teria que verificar o render out of bounds antes de rotacionar
-  // TODO! verificar se a rotação não vai girar 1 elem dentro do outro
   void checkBounds() {
     for (int index = 0; index < 16; index++) {
       int col = (index % 4) + positionY;

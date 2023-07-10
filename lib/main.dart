@@ -5,6 +5,9 @@ void main() {
   runApp(const MyApp());
 }
 
+// TODO! impedir um elemento de girar dentro de outro
+// TODO! implementar uma mecânica de gameOver
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
