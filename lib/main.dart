@@ -7,6 +7,9 @@ void main() {
 
 // TODO! impedir um elemento de girar dentro de outro
 // TODO! implementar uma mecânica de gameOver
+// TODO mecanica de sombra de onde a peça vai cair
+// TODO input de keyboard
+// TODO mecanica de hard drop
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
