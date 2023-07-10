@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tetris/bit.dart';
 import 'package:tetris/model.dart';
 import 'package:tetris/piece.dart';
 import 'package:tetris/pixel.dart';
+import 'package:tetris/tetris_piece.dart';
 
 /*
   Game Board
@@ -22,7 +24,9 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-  Piece currentPiece = Piece(type: Tetromino.T);
+  //Piece currentPiece = Piece(type: Tetromino.L);
+  TetrisPiece currentPiece = TetrisPiece(type: Tetromino.I);
+  int currentScore = 0;
 
   @override
   void initState() {
@@ -31,8 +35,8 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   void startGame() {
-    currentPiece.initializePiece();
-    Duration frameRate = const Duration(milliseconds: 500);
+    currentPiece.initializePosition();
+    Duration frameRate = const Duration(milliseconds: 1000);
     gameLoop(frameRate);
   }
 
@@ -41,6 +45,7 @@ class _GameBoardState extends State<GameBoard> {
       frameRate,
       (timer) {
         setState(() {
+          clearLines();
           checkLanding();
           currentPiece.movePiece(Direction.down);
         });
@@ -88,7 +93,6 @@ class _GameBoardState extends State<GameBoard> {
           gameBoard[row][col] = currentPiece.type;
         }
       }
-
       createNewPiece();
     }
   }
@@ -98,8 +102,8 @@ class _GameBoardState extends State<GameBoard> {
     Random rand = Random();
 
     Tetromino randType = Tetromino.values[rand.nextInt(Tetromino.values.length)];
-    currentPiece = Piece(type: randType);
-    currentPiece.initializePiece();
+    currentPiece = TetrisPiece(type: randType);
+    currentPiece.initializePosition();
   }
 
   void moveLeft() {
@@ -110,13 +114,36 @@ class _GameBoardState extends State<GameBoard> {
     }
   }
 
-  void rotatePiece() {}
+  void rotateRight() {
+    setState(() {
+      currentPiece.rotateRight();
+    });
+  }
 
   void moveRight() {
     if (!checkCollision(Direction.right)) {
       setState(() {
         currentPiece.movePiece(Direction.right);
       });
+    }
+  }
+
+  void clearLines() {
+    for (int row = colLength - 1; row >= 0; row--) {
+      bool rowIsFull = true;
+      for (int col = 0; col < rowLength; col++) {
+        if (gameBoard[row][col] == null) {
+          rowIsFull = false;
+          break;
+        }
+      }
+      if (rowIsFull) {
+        for (int r = row; r > 0; r--) {
+          gameBoard[r] = List.from(gameBoard[r - 1]);
+        }
+        gameBoard[0] = List.generate(row, (index) => null);
+        currentScore++;
+      }
     }
   }
 
@@ -177,23 +204,38 @@ class _GameBoardState extends State<GameBoard> {
           // Controls
           SizedBox(
             height: 200,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                IconButton(
-                  onPressed: moveLeft,
-                  color: Colors.white,
-                  icon: const Icon(Icons.arrow_back),
-                ),
-                IconButton(
-                  onPressed: rotatePiece,
-                  color: Colors.white,
-                  icon: const Icon(Icons.rotate_right),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      onPressed: moveLeft,
+                      color: Colors.white,
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    IconButton(
+                      onPressed: rotateRight,
+                      color: Colors.white,
+                      icon: const Icon(Icons.rotate_left),
+                    ),
+                    IconButton(
+                      onPressed: rotateRight,
+                      color: Colors.white,
+                      icon: const Icon(Icons.rotate_right),
+                    ),
+                    IconButton(
+                      onPressed: moveRight,
+                      color: Colors.white,
+                      icon: const Icon(Icons.arrow_forward),
+                    ),
+                  ],
                 ),
                 IconButton(
                   onPressed: moveRight,
                   color: Colors.white,
-                  icon: const Icon(Icons.arrow_forward),
+                  icon: const Icon(Icons.arrow_downward),
                 ),
               ],
             ),
