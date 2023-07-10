@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tetris/model.dart';
+import 'package:tetris/models/model.dart';
 
 class TetrisPiece {
   Tetromino type;

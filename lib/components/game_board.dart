@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:tetris/bit.dart';
-import 'package:tetris/model.dart';
-import 'package:tetris/piece.dart';
-import 'package:tetris/pixel.dart';
-import 'package:tetris/tetris_piece.dart';
+import 'package:tetris/models/model.dart';
+import 'package:tetris/components/pixel.dart';
+import 'package:tetris/models/tetris_piece.dart';
 
 /*
   Game Board
@@ -24,7 +22,6 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-  //Piece currentPiece = Piece(type: Tetromino.L);
   TetrisPiece currentPiece = TetrisPiece(type: Tetromino.I);
   int currentScore = 0;
 
