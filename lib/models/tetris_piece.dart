@@ -54,6 +54,12 @@ class TetrisPiece {
     checkBounds();
   }
 
+  void rotateLeft() {
+    rotationState = (rotationState - 1) % 4;
+    value = binaryPositions[type]?[rotationState] ?? 0;
+    checkBounds();
+  }
+
   void checkBounds() {
     for (int index = 0; index < 16; index++) {
       int col = (index % 4) + positionY;
@@ -62,10 +68,12 @@ class TetrisPiece {
         if (col < 0) {
           positionY++;
           checkBounds();
+          break;
         }
         if (col >= 10) {
           positionY--;
           checkBounds();
+          break;
         }
       }
     }

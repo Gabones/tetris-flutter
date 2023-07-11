@@ -12,7 +12,10 @@ import 'package:tetris/models/tetris_piece.dart';
   Um espaço preenchido contém a cor para representar a respectiva peça
 */
 
-List<List<Tetromino?>> gameBoard = List.generate(colLength, (i) => List.generate(rowLength, (j) => null));
+List<List<Tetromino?>> gameBoard = List.generate(
+  colLength,
+  (i) => List.generate(rowLength, (j) => null),
+);
 
 class GameBoard extends StatefulWidget {
   const GameBoard({super.key});
@@ -24,6 +27,7 @@ class GameBoard extends StatefulWidget {
 class _GameBoardState extends State<GameBoard> {
   TetrisPiece currentPiece = TetrisPiece(type: Tetromino.I);
   int currentScore = 0;
+  bool gameOver = false;
 
   @override
   void initState() {
@@ -33,7 +37,7 @@ class _GameBoardState extends State<GameBoard> {
 
   void startGame() {
     currentPiece.initializePosition();
-    Duration frameRate = const Duration(milliseconds: 1000);
+    Duration frameRate = const Duration(milliseconds: 500);
     gameLoop(frameRate);
   }
 
@@ -44,6 +48,10 @@ class _GameBoardState extends State<GameBoard> {
         setState(() {
           clearLines();
           checkLanding();
+          if (gameOver) {
+            timer.cancel();
+            showGameOverDialog();
+          }
           currentPiece.movePiece(Direction.down);
         });
       },
@@ -101,6 +109,10 @@ class _GameBoardState extends State<GameBoard> {
     Tetromino randType = Tetromino.values[rand.nextInt(Tetromino.values.length)];
     currentPiece = TetrisPiece(type: randType);
     currentPiece.initializePosition();
+
+    if (isGameOver()) {
+      gameOver = true;
+    }
   }
 
   void moveLeft() {
@@ -114,6 +126,12 @@ class _GameBoardState extends State<GameBoard> {
   void rotateRight() {
     setState(() {
       currentPiece.rotateRight();
+    });
+  }
+
+  void rotateLeft() {
+    setState(() {
+      currentPiece.rotateLeft();
     });
   }
 
@@ -142,6 +160,46 @@ class _GameBoardState extends State<GameBoard> {
         currentScore++;
       }
     }
+  }
+
+  bool isGameOver() {
+    for (int col = 0; col < rowLength; col++) {
+      if (gameBoard[0][col] != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void showGameOverDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Game Over'),
+        content: Text('Your score is: $currentScore'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              resetGame();
+              Navigator.pop(context);
+            },
+            child: const Text('Play Again'),
+          )
+        ],
+      ),
+    );
+  }
+
+  void resetGame() {
+    gameBoard = List.generate(
+      colLength,
+      (i) => List.generate(rowLength, (j) => null),
+    );
+
+    gameOver = false;
+    currentScore = 0;
+    createNewPiece();
+    startGame();
   }
 
   @override
